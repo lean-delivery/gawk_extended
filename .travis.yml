@@ -6,6 +6,8 @@ env:
   matrix:
   - OS=ubuntu DIST=xenial
   - OS=debian DIST=jessie
+  - OS=el DIST=6
+  - OS=el DIST=7
 
 script:
 - git submodule update --init --recursive
@@ -26,4 +28,4 @@ deploy:
     # encrypted key only for travis connection.
     # See https://docs.travis-ci.com/user/deployment/bintray/ for related details
   on:
-    all_branches: true
+    branch: master
