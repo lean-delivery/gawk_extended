@@ -1,6 +1,6 @@
 {
   "package": {
-      "name": "gawk",
+      "name": "gawk_ext",
       "repo": "rpm",
       "subject": "lean-delivery",
       "desc": "rpm package gawk",
