@@ -1,7 +1,7 @@
 Summary: The GNU version of the awk text processing utility
 Name: gawk
 Version: 4.2.1
-Release: 4%{?dist}.1
+Release: 4%{?dist}
 # Most of source files are licensed under GPLv3+,
 # several files are GPL or LGPLv2.1+ licensed,
 # gettext.h is LGPL and random.c is BSD licensed
@@ -11,7 +11,7 @@ URL: http://www.gnu.org/software/gawk/gawk.html
 Source0: http://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.gz
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
-Conflicts: filesystem < 3
+#Conflicts: filesystem < 3
 Provides: /bin/awk
 Provides: /bin/gawk
 BuildRequires: byacc
@@ -67,9 +67,9 @@ if [ $1 = 0 -a -f %{_infodir}/gawk.info.gz ]; then
 fi
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
-%doc README COPYING
-%doc README_d/README.multibyte README_d/README.tests POSIX.STD
+# %defattr(-,root,root,-)
+#%doc README COPYING
+#%doc README_d/README.multibyte README_d/README.tests POSIX.STD
 %{_bindir}/*awk
 %{_mandir}/man1/*
 %{_infodir}/gawk.info*
