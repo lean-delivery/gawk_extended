@@ -29,6 +29,7 @@ deploy:
       # See https://docs.travis-ci.com/user/deployment/bintray/ for related details
     on:
       branch: master
+      condition: $OS =~ ^el|centos$
   - provider: bintray
     user: tgadiev
     file: deb.json
@@ -39,3 +40,4 @@ deploy:
       # See https://docs.travis-ci.com/user/deployment/bintray/ for related details
     on:
       branch: master
+      condition: $OS =~ ^ubuntu|debian$
