@@ -1,7 +1,7 @@
 {
   "package": {
       "name": "gawk",
-      "repo": "gawk_extended",
+      "repo": "deb",
       "subject": "lean-delivery",
       "desc": "dpkg package gawk",
       "website_url": "https://github.com/lean-delivery/gawk_extended",
@@ -31,7 +31,7 @@
 
   "files":
       [
-      {"includePattern": "build/(.*\\.deb | .*\\.rpm )", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gawk_extended/$1"}
+      {"includePattern": "build/(.*\\.deb)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gawk_extended/$1"}
       ],
   "publish": true
 }
