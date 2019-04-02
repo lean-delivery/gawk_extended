@@ -1,6 +1,6 @@
 {
   "package": {
-      "name": "gawk",
+      "name": "gawk_ext",
       "repo": "deb",
       "subject": "lean-delivery",
       "desc": "dpkg package gawk",
@@ -31,7 +31,7 @@
 
   "files":
       [
-      {"includePattern": "build/(.*\\.deb)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "deb/$1"}
+      {"includePattern": "build/(.*\\.deb)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "/$1"}
       ],
   "publish": true
 }
