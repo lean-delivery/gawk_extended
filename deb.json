@@ -31,7 +31,13 @@
 
   "files":
       [
-      {"includePattern": "build/(.*\\.deb)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "/$1"}
+      {"includePattern": "build/(.*\\.deb)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "/$1",
+        "matrixParams": {
+          "deb_distribution": "unstable",
+          "deb_component": "main",
+          "deb_architecture": "amd64"
+        }
+      }
       ],
   "publish": true
 }
