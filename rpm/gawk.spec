@@ -8,13 +8,29 @@ Release: 4%{?dist}
 License: GPLv3+ and GPL and LGPLv3+ and LGPL and BSD
 Group: Applications/Text
 URL: http://www.gnu.org/software/gawk/gawk.html
-Source0: http://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.gz
+
+%define	GAWK_SOURCE_FILE		gawk
+# It untars into a directory with this as the name (n
+%define	GAWK_SOURCE_DIR		foo
+%define	GAWK_VERSION			4.2.1
+
+%define	GAWK_JSON_SOURCE_FILE		gawk-json
+# It untars into a directory with this as the name (n
+%define	GAWK_JSON_SOURCE_DIR		foo
+%define	GAWK_JSON_VERSION			1.0.2
+
+Source0: http://ftp.gnu.org/gnu/gawk/%{GAWK_SOURCE_FILE}-%{GAWK_VERSION}.tar.gz
+Source1: https://sourceforge.net/projects/gawkextlib/files/%{GAWK_JSON_SOURCE_FILE}-%{GAWK_JSON_VERSION}.tar.gz
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 #Conflicts: filesystem < 3
 Provides: /bin/awk
 Provides: /bin/gawk
 BuildRequires: byacc
+BuildRequires:  rapidjson-devel
+
+%global gawk_api_version %(gawk 'BEGINFILE {if (ERRNO) nextfile} match($0, /#define gawk_api_(major|minor)_version[[:space:]]+([[:digit:]]+)/, f) {v[f[1]] = f[2]} END {print (v["major"] "." v["minor"])}' /usr/include/gawkapi.h)
+%global _hardened_build 1
 
 %description
 The gawk package contains the GNU version of awk, a text processing
@@ -24,34 +40,45 @@ quick and easy text pattern matching and reformatting jobs.
 Install the gawk package if you need a text processing utility. Gawk is
 considered to be a standard Linux tool for processing text.
 
+This package also includes gawk-json
+
+
 %prep
-%setup -q
-#%patch1 -p1
+%setup -c -n gawk-mega-package -a 0 -a 1
 
 %build
-cd /build/usr/src/debug/gawk-4.2.1.14/ && ls -a
+cd gawk-json-1.0.2/
+chmod +x build-aux/install-sh
+%configure
+%make_build
 
+cd ../gawk-4.2.1/
 chmod +x configure
 chmod +x install-sh
 chmod +x extension/build-aux/install-sh
 chmod +x test/*.sh
 %configure --with-libsigsegv-prefix=no
 make %{?_smp_mflags}
+%make_build
+
 
 %check
+cd gawk-4.2.1/
 make check diffout
+cd ../gawk-json-1.0.2/
+make check
+cp -rp ./* ../
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=${RPM_BUILD_ROOT}
+make install DESTDIR=${RPM_BUILD_ROOT} -C gawk-4.2.1/
+make install DESTDIR=${RPM_BUILD_ROOT} -C gawk-json-1.0.2/
 
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
 ln -sf gawk.1.gz $RPM_BUILD_ROOT%{_mandir}/man1/awk.1.gz
 ln -sf gawk $RPM_BUILD_ROOT%{_bindir}/awk
 # remove %{version}* , when we are building a snapshot...
 rm -f $RPM_BUILD_ROOT/%{_bindir}/{,p}gawk-%{version}* $RPM_BUILD_ROOT%{_infodir}/dir
-
-%find_lang %name
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -66,7 +93,14 @@ if [ $1 = 0 -a -f %{_infodir}/gawk.info.gz ]; then
     /sbin/install-info --delete %{_infodir}/gawk.info.gz %{_infodir}/dir || :
 fi
 
-%files -f %{name}.lang
+%files
+#%license COPYING
+#%doc NEWS
+%doc test/*.awk
+%{_libdir}/gawk/json.so
+%{_mandir}/man3/*
+
+#%files -f %{name}.lang
 # %defattr(-,root,root,-)
 #%doc README COPYING
 #%doc README_d/README.multibyte README_d/README.tests POSIX.STD
@@ -76,9 +110,10 @@ fi
 %{_infodir}/gawkinet.info*
 %{_libexecdir}/awk
 %{_datadir}/awk
+/usr/share/locale/*
 /etc/profile.d/gawk.csh
 /etc/profile.d/gawk.sh
-/usr/bin/gawk-4.2.1
+/usr/bin/gawk
 /usr/include/gawkapi.h
 /usr/lib64/gawk/filefuncs.so
 /usr/lib64/gawk/fnmatch.so
